@@ -6,7 +6,7 @@
         "output_strat": "concat"
     },
     {
-        "type": "llm_call",
+        "type": "llm",
         "instructions": "Summarize the search results following the output format specified. You must create a valid JSON.\n\nSearch results: [input]",
         "output_format": "{ \"summary\": [put your summary here]}"
     }

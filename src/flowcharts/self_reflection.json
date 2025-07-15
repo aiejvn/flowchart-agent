@@ -1,0 +1,12 @@
+[
+
+    {
+        "type": "llm",
+        "instructions": "[input]"
+    },
+    {
+        "type": "llm",
+        "instructions": "The following is a generation from another assistant.\n\n[input]\n\nCheck that their answer makes sense. If there are any factual inconsistencies or issues with their reasoning or conclusions, rewrite the previous assistant's answer.",
+        "output_format": "{ \"analysis\": \"[A concise but thorough analysis of the previous assistant's answer]\", \"rewritten\": \"[Your rewrite here]\"}"
+    }
+]

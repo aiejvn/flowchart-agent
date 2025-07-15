@@ -4,14 +4,8 @@ from flowchart import Flowchart, FlowchartTask, FlowchartTaskResult
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
-def create_test(input_file, file_format='jsonl', split=True, test_file=''):
-    if split: # split doesnt exist, make from input_file
-        pass
-    else: # split alr exists, read input file as train and a separate file as test
-        pass
-
 def google_form(results):
-    return [f'Title: {x['title']}\n\nSnippet: {x['snippet']}' for x in results]
+    return [f"Title: {x['title']}\n\nSnippet: {x['snippet']}" for x in results]
 
 OUTPUT_FORMAT_MAPPING = {
     'google.com': google_form, 
