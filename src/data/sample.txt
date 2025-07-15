@@ -1,0 +1,26 @@
+(a)	Retrieving provisions and variations of provisions from other SHAs;
+
+-	Please provide sample call right provisions where a founding shareholder has the right at any time after a certain date to purchase other shareholders’ shares for a fixed purchase price per share. 
+-	Please provide sample share repurchase rights provisions where any shareholder or the company may repurchase the shares of a shareholder who commits a material breach of the agreement. 
+-	Please provide sample directors rights provisions where a shareholder only has rights to appoint a director to a board if it holds a certain percentage of shares in the company and if their share ownership falls below a certain percentage, they no longer have the right to nominate a director.
+-	Retrieve provisions that deal with buy-sell or “shotgun” elections. Find different provisions that deal with (i) a two-party shareholder structure, and (ii) a multi-party shareholder structure.
+-	Retrieve provisions that deal with entitlement to nominate directors to the Board. Find different provisions that draw entitlement lines that are based on (i) identity of shareholder, and (ii) percentage of shares held by a shareholder.
+-	Retrieve provisions that deal with rights of first refusal, tag-along and drag-along rights. Find different provisions that deal with these (i) as inter-related concepts and provisions, and (ii) as independent and stand-alone concepts and provisions.
+
+(b)	Detecting if there are any conflicts with the sourced provision and the rest of the working draft (including defined terms and/or conflicts with other provisions in the draft documents);
+
+-	Please find all defined terms that are defined but not used throughout the draft.
+-	Please find all terms that are capitalized but not defined in the draft.
+-	Please identify any provisions which are meant to provide for an exclusion to another provision but do not actually do so (e.g. if a section says “Except as set out in section _” or “Subject to section _”, but the referenced section is either not in the draft or does not qualify the other section). 
+-	Retrieve provisions that deal with buy-sell or “shotgun” elections. Find different provisions that deal with (i) a two-party shareholder structure, and (ii) a multi-party shareholder structure.
+-	Retrieve provisions that deal with entitlement to nominate directors to the Board. Find different provisions that draw entitlement lines that are based on (i) identity of shareholder, and (ii) percentage of shares held by a shareholder.
+-	Retrieve provisions that deal with rights of first refusal, tag-along and drag-along rights. Find different provisions that deal with these (i) as inter-related concepts and provisions, and (ii) as independent and stand-alone concepts and provisions.
+
+(c)	Identifying provisions from reference documents that have not been addressed in the working draft.
+
+-	Please identify any provisions that are commonly included in a shareholders agreement which are not currently captured in this draft but may be relevant. 
+-	Are there any provisions that have not be included in this draft that may be relevant in the context of the number of shareholders?
+-	What additional provisions should we consider adding into this agreement that is not already included? 
+-	Identify in the sourced provision any dependencies (ie. other defined terms, the operation of other clauses) in the reference document that are not found in the working draft.
+-	Identify in the working draft which existing provisions would “break” in its operation if the sourced provision was used to replace its corresponding provision in the working draft.
+
