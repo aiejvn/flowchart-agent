@@ -15,7 +15,7 @@ class FlowchartTask:
         elif self.type == 'llm':
             self.instructions = inp['instructions']
             self.inputFormat = (inp['input_format'] if 'input_format' in inp else None)
-            self.outputFormat = (inp['output_format'] if 'input_format' in inp else None)
+            self.outputFormat = (inp['output_format'] if 'output_format' in inp else None)
 
     def __repr__(self):
         return f"FlowchartNode(name={self.name.__repr__()}, instructions={self.instructions.__repr__()}, inputFormat={self.inputFormat.__repr__()}, outputFormat={self.outputFormat.__repr__()})"
@@ -31,8 +31,8 @@ class FlowchartTask:
         instructions = self.instructions.replace(input_reg, input)
 
         return f"""{instructions}
-    {(inp_form if self.inputFormat else '')}
-    {(out_form if self.outputFormat else '')}
+    {(inp_form if self.inputFormat is not None else '')}
+    {(out_form if self.outputFormat is not None else '')}
     """
 
 
@@ -41,6 +41,8 @@ class FlowchartTaskResult:
         self.value = value
         self.executionDetails = executionDetails
 
+    def __dict__(self):
+        return {'value': self.value, 'executionDetails': ([x.content for x in self.executionDetails['promptMessages']] if 'promptMessages' in self.executionDetails else self.executionDetails)}
     def __repr__(self):
         return f"FlowchartNodeOutput(value={self.value.__repr__()}, executionDetails={self.executionDetails.__repr__()})"
 
