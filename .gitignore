@@ -196,3 +196,8 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+constructive_dismissal/
+src/flowcharts/**
+src/data/**
+src/glob.py

@@ -1,5 +1,4 @@
-from flowchart import load_flowchart
-from utils import FlowchartTask_llm_execution, init
+from flowchart import load_flowchart, init
 import json
 import dotenv
 
@@ -17,7 +16,7 @@ def example_test(input_file, flowchart_file, n=-1):
         n = len(data)
 
     for d in data[:n]:
-        result = fc.execute(FlowchartTask_llm_execution, d['query'])
+        result = fc.execute(d['query'])
         # print(result[-1])
 
         res.append(result)
@@ -25,7 +24,7 @@ def example_test(input_file, flowchart_file, n=-1):
     return res
 
 dotenv.load_dotenv()
-res = example_test('src/data/sample.jsonl', 'src/flowcharts/self_reflection.json', n=1)
+res = example_test('src/data/sample.jsonl', 'src/flowcharts/api.json', n=1)
 
-with open('src/data/self_reflection.txt', 'w') as f:
+with open('src/data/api.txt', 'w') as f:
     f.write(json.dumps([[y.__dict__() for y in x] for x in res], indent=4))
