@@ -201,3 +201,4 @@ constructive_dismissal/
 src/flowcharts/**
 src/data/**
 src/glob.py
+activate/

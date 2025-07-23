@@ -64,49 +64,50 @@ class FlowchartTaskResult:
         return f"FlowchartNodeOutput(value={self.value.__repr__()}, executionDetails={self.executionDetails.__repr__()})"
 
 
-def llm_execution(node: FlowchartTask, input: str) -> FlowchartTaskResult:
-    """
-    Execute a FlowchartNode and return the output.
-    This function simulates the execution of a flowchart node using a basic LLM call.
-
-    currently, the audit is just the prompt and the response from the LLM.
-    """
-    assert isinstance(
-        node, FlowchartTask), "node must be a FlowchartTask instance"
-    messages = [
-        SystemMessage(content="You are a helpful assistant."),
-        HumanMessage(content=node.to_prompt(input)),
-    ]
-    response = llm.invoke(messages)
-    return FlowchartTaskResult(value=response.content, executionDetails={"promptMessages": messages, "response": response})
-
-
-def api_execution(node: FlowchartTask, input, headers={}) -> FlowchartTaskResult:
-    if node.url in REQUESTS_MAPPING:
-        response = REQUESTS_MAPPING[node.url](url=''.join(['http://', node.url, node.endpoint]), data=input, headers=headers)
-    else:
-        return "Not supported"
-    
-    res = response.json()
-    text = []
-    if node.outputSelection == 'concat':
-        text = res
-    elif node.outputSelection.startswith('top'): # top k, where k is < 10
-        text.extend(res[:int(node.outputSelection[-1])])
-    elif node.outputSelection == 'random': # random k, where k is < 10
-        text.append(random.sample(res, k=int(node.outputSelection[-1])))
-
-    out = OUTPUT_FORMAT_MAPPING[node.url](text)
-    
-    return FlowchartTaskResult(value='\n**********\n'.join(out), executionDetails={'full_response': res, 'input': input})
-
-
 # This is a linear flowchart structure, the nodes are connected in a sequence.
 class Flowchart:
     # nodes: List[FlowchartTask]
 
     def __init__(self, nodes: List[FlowchartTask]):
         self.nodes = nodes
+
+
+    def llm_execution(node: FlowchartTask, input: str) -> FlowchartTaskResult:
+        """
+        Execute a FlowchartNode and return the output.
+        This function simulates the execution of a flowchart node using a basic LLM call.
+
+        currently, the audit is just the prompt and the response from the LLM.
+        """
+        assert isinstance(
+            node, FlowchartTask), "node must be a FlowchartTask instance"
+        messages = [
+            SystemMessage(content="You are a helpful assistant."),
+            HumanMessage(content=node.to_prompt(input)),
+        ]
+        response = llm.invoke(messages)
+        return FlowchartTaskResult(value=response.content, executionDetails={"promptMessages": messages, "response": response})
+
+
+    def api_execution(node: FlowchartTask, input, headers={}) -> FlowchartTaskResult:
+        if node.url in REQUESTS_MAPPING:
+            response = REQUESTS_MAPPING[node.url](url=''.join(['http://', node.url, node.endpoint]), data=input, headers=headers)
+        else:
+            return "Not supported"
+        
+        res = response.json()
+        text = []
+        if node.outputSelection == 'concat':
+            text = res
+        elif node.outputSelection.startswith('top'): # top k, where k is < 10
+            text.extend(res[:int(node.outputSelection[-1])])
+        elif node.outputSelection == 'random': # random k, where k is < 10
+            text.append(random.sample(res, k=int(node.outputSelection[-1])))
+
+        out = OUTPUT_FORMAT_MAPPING[node.url](text)
+        
+        return FlowchartTaskResult(value='\n**********\n'.join(out), executionDetails={'full_response': res, 'input': input})
+
 
     def execute(self, input: Any) -> List[FlowchartTaskResult]:
         """
@@ -120,13 +121,12 @@ class Flowchart:
                                     "initial_input": input})]
         for node in self.nodes:
             if node.type == 'llm':
-                results.append(llm_execution(node,results[-1].value))
+                results.append(self.llm_execution(node,results[-1].value))
             elif node.type == 'api':
                 data = {'query': results[-1].value, 'collection': 'constructive_dismissal'}
-                results.append(api_execution(node, data))
+                results.append(self.api_execution(node, data))
 
         return results  # return all outputs, including the initial input as the first element
-
 
 
 def load_flowchart(filename: str):

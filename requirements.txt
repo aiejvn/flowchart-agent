@@ -20,8 +20,10 @@ langsmith==0.3.45
 openai==1.86.0
 orjson==3.10.18
 packaging==24.2
+PineconePDFExtractor==0.1.8
 pydantic==2.11.5
 pydantic_core==2.33.2
+PyPDF2==3.0.1
 PyYAML==6.0.2
 regex==2024.11.6
 requests==2.32.4
