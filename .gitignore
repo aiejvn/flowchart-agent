@@ -197,8 +197,9 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-constructive_dismissal/
+src/usecases/**
 src/flowcharts/**
 src/data/**
 src/glob.py
 activate/
+UltraFeedback/

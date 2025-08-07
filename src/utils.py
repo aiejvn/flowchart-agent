@@ -87,6 +87,7 @@ def process_docx(data_dir, fn):
 def split_docs(data_dir):
     data = []
     for fn in os.listdir(data_dir):
+        print(fn)
         try:
             # extractor = PyPDFLoader(1)
             if fn.endswith('.pdf'):
@@ -95,16 +96,20 @@ def split_docs(data_dir):
                 text = process_image(data_dir, fn)
             elif fn.split('.')[-1] in ['doc', 'docx']:
                 text = process_docx(data_dir, fn)
+            else:
+                data = split_docs(os.path.join(data_dir, fn))
+                for d in data:
+                    d['name'] += '_' + fn
+                continue
 
 
         except Exception as e:
             print(f"Warning {os.path.join(data_dir, fn)}: PDF file is empty")
             continue
 
-        data.append({'name': fn.split('.pdf')[0], 'content': re.sub(r'[\s]{3,}', '\n\n', '\n'.join([x.strip() for x in text])).strip()})
+        data.append({'name': '.'.join(fn.split('.')[:-1]), 'content': re.sub(r'[\s]{3,}', '\n\n', '\n'.join([x.strip() for x in text])).strip()})
 
     return data
-
 
 def split_upsert(data_dir, namespace):
     data = split_docs(data_dir)

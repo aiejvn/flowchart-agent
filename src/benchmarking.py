@@ -16,7 +16,7 @@ def example_test(input_file, flowchart_file, n=-1):
         n = len(data)
 
     for d in data[:n]:
-        result = fc.execute(d['query'])
+        result = fc.execute(d)
         # print(result[-1])
 
         res.append(result)
@@ -24,7 +24,7 @@ def example_test(input_file, flowchart_file, n=-1):
     return res
 
 dotenv.load_dotenv()
-res = example_test('src/data/sample.jsonl', 'src/flowcharts/api.json', n=1)
+res = example_test('src/data/cd.jsonl', 'src/flowcharts/self_reflection.json', n=10)
 
-with open('src/data/api.txt', 'w') as f:
+with open('src/data/cd.txt', 'w') as f:
     f.write(json.dumps([[y.__dict__() for y in x] for x in res], indent=4))
