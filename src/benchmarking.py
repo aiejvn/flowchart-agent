@@ -45,5 +45,5 @@ if __name__ == "__main__":
         
         res = example_test(args.input, args.flow, m, args.topk)
 
-        with open(f'{args.out}/{args.input.split('/')[-1].split('.')[0]}_{m}_{args.flow.split('/')[-1].split('.')[0]}.json', 'w') as f:
+        with open(f"{args.out}/{args.input.split('/')[-1].split('.')[0]}_{m}_{args.flow.split('/')[-1].split('.')[0]}.json", 'w') as f:
             f.write(json.dumps(res, indent=4))
