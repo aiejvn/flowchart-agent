@@ -19,3 +19,12 @@ REQUESTS_MAPPING = {
 EVAL_METRICS = {
     'example.json': ['bleu']
 }
+
+PROVIDER_MAPPING = {
+    'gpt-4o-mini': 'openai',
+    'gpt-4o': 'openai',
+    'gpt-o3': 'openai',
+    'gpt-o3-research': 'openai',
+    'claude-3-sonnet': 'openai',
+
+}

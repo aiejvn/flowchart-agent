@@ -2,10 +2,14 @@ from flowchart import load_flowchart, init
 import json
 import dotenv
 
+import argparse
 
-def example_test(input_file, flowchart_file, n=-1):
+from tqdm import *
+
+
+def example_test(input_file, flowchart_file, model, n=-1):
     fc = load_flowchart(flowchart_file)
-    init('gpt-4o-mini', 'openai')
+    init(model)
 
     if input_file.endswith('jsonl'):
         with open(input_file, 'r') as f:
@@ -15,16 +19,31 @@ def example_test(input_file, flowchart_file, n=-1):
     if n == -1:
         n = len(data)
 
-    for d in data[:n]:
+    # print(data[0])
+    for d in tqdm(data[:n]):
         result = fc.execute(d)
         # print(result[-1])
-
-        res.append(result)
+        # result[0]['gold_label'] = d['gold_label'][0]
+        res.append({'result': result[0].__dict__(), 'gold_label': d['gold_label'][0]})
 
     return res
 
-dotenv.load_dotenv()
-res = example_test('src/data/cd.jsonl', 'src/flowcharts/self_reflection.json', n=10)
+if __name__ == "__main__":
+    dotenv.load_dotenv()
 
-with open('src/data/cd.txt', 'w') as f:
-    f.write(json.dumps([[y.__dict__() for y in x] for x in res], indent=4))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-m", "--model", help = "model name", default='gpt-4o-mini')
+    parser.add_argument("-i", "--input", help = "input file name")
+    parser.add_argument("-f", "--flow", help = "flowchart")
+    parser.add_argument("-k", "--topk", help = "top k", type=int)
+    parser.add_argument("-o", "--out", help = "output folder")
+
+    args = parser.parse_args()
+
+    models = ['gpt-4o', 'o3', 'o3-deep-research']
+    for m in models:
+        
+        res = example_test(args.input, args.flow, m, args.topk)
+
+        with open(f'{args.out}/{args.input.split('/')[-1].split('.')[0]}_{m}_{args.flow.split('/')[-1].split('.')[0]}.json', 'w') as f:
+            f.write(json.dumps(res, indent=4))

@@ -88,6 +88,8 @@ def split_docs(data_dir):
     data = []
     for fn in os.listdir(data_dir):
         print(fn)
+        if fn.startswith('Benchmark'):
+            continue
         try:
             # extractor = PyPDFLoader(1)
             if fn.endswith('.pdf'):
