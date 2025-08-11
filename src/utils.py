@@ -86,6 +86,7 @@ def process_docx(data_dir, fn):
 
 def split_docs(data_dir):
     data = []
+    gold = []
     for fn in os.listdir(data_dir):
         print(fn)
         if fn.startswith('Benchmark'):
@@ -99,25 +100,32 @@ def split_docs(data_dir):
             elif fn.split('.')[-1] in ['doc', 'docx']:
                 text = process_docx(data_dir, fn)
             else:
-                data = split_docs(os.path.join(data_dir, fn))
-                for d in data:
+                temp = [x for y in split_docs(os.path.join(data_dir, fn)) for x in y]
+                print(temp)
+                for d in temp:
                     d['name'] += '_' + fn
+                data.extend(temp)
+                print(data)
                 continue
+            if fn.lower().startswith('benchmark'):
+                gold.append({'name': '.'.join(fn.split('.')[:-1]), 'content': re.sub(r'[\s]{3,}', '\n\n', '\n'.join([x.strip() for x in text])).strip()})
 
+            else:
+                data.append({'name': '.'.join(fn.split('.')[:-1]), 'content': re.sub(r'[\s]{3,}', '\n\n', '\n'.join([x.strip() for x in text])).strip()})
 
         except Exception as e:
-            print(f"Warning {os.path.join(data_dir, fn)}: PDF file is empty")
+            print(f"Warning {os.path.join(data_dir, fn)}: {e}")
             continue
+        
+        
 
-        data.append({'name': '.'.join(fn.split('.')[:-1]), 'content': re.sub(r'[\s]{3,}', '\n\n', '\n'.join([x.strip() for x in text])).strip()})
-
-    return data
+    return gold, data
 
 def split_upsert(data_dir, namespace):
     data = split_docs(data_dir)
 
     for x in data:
-        print(f'Upserting {x['name']}' + '\n')
+        print(f'Upserting {x["name"]}' + '\n')
         # print(x['content'])
 
         chunked_texts = text_splitter.split_text(x['content'])
