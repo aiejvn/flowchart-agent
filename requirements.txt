@@ -16,6 +16,7 @@ langchain==0.3.25
 langchain-core==0.3.65
 langchain-openai==0.3.22
 langchain-text-splitters==0.3.8
+langchain_community==0.3.27
 langsmith==0.3.45
 openai==1.86.0
 orjson==3.10.18
@@ -36,4 +37,6 @@ tqdm==4.67.1
 typing-inspection==0.4.1
 typing_extensions==4.14.0
 urllib3==2.4.0
+unstructured
+python-docx
 zstandard==0.23.0
