@@ -6,17 +6,21 @@ import random, re
 from globals import REQUESTS_MAPPING, OUTPUT_FORMAT_MAPPING, PROVIDER_MAPPING
 
 from langchain.chat_models import init_chat_model
+
+# from langchain_community.llms import OpenAI # For OpenAI's non-chat models
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
 
 llm = None
 
-def init(model_name, t=0.3 ):
+def init(model_name, t=1):
     global llm
+
     llm = init_chat_model(
             model_name,
             model_provider=PROVIDER_MAPPING[model_name],
-            temperature=t)
+            temperature=t
+            )
 
 
 
@@ -30,7 +34,7 @@ class FlowchartTask:
             else:                
                 self.url = inp['url']
                 self.endpoint = inp['endpoint']
-                self.outputSelection = inp['output_strat'] # one of these options: concat, topk, random
+                self.metadata = inp.get('metadata', {}) # one of these options: concat, topk, random
         elif self.type == 'llm':
             self.instructions = inp['instructions']
             self.inputFormat = inp.get('input_format', None)
@@ -52,7 +56,8 @@ class FlowchartTask:
         # print(keys)
         instructions = self.instructions
         for k in keys:
-            # print(k[0], input[k[1]])
+            print(k[0], input[k[1]].value)
+            print('**************************************************************************\n\n\n\n')
             instructions = instructions.replace(k[0], input[k[1]].value)
 
         return f"""{instructions}
@@ -96,33 +101,33 @@ class Flowchart:
             SystemMessage(content="You are a helpful assistant. Please answer the user's input as factually as possible."),
             HumanMessage(content=node.to_prompt(input)),
         ]
+        count = 0
+        while count < 3:
+            try:
+                response = llm.invoke(messages)
 
-        response = llm.invoke(messages)
+                # print(response.content, re.sub(r'\`\`\`.*', '', response.content))
+                temp = json.loads(re.sub(r',(?=\n})', '', re.sub(r'\`\`\`.*', '', response.content)).strip().replace('\n', ''))
 
-        # print(response.content, re.sub(r'\`\`\`.*', '', response.content))
-        temp = json.loads(re.sub(r'\`\`\`.*', '', response.content).strip())
-        return FlowchartTaskResult(value=temp['answer'], executionDetails={"promptMessages": messages, "analysis": temp.get('analysis', ''), "response": response})
+                break
+            except json.decoder.JSONDecodeError as e:
+                print('retrying')
+                count += 1
+
+        return FlowchartTaskResult(value=f"{temp['answer']}\n{temp['analysis']}", executionDetails={"promptMessages": messages, "original": temp, "response": response})
 
 
     def api_execution(self, node: FlowchartTask, input, headers={}) -> FlowchartTaskResult:
         if node.url in REQUESTS_MAPPING:
-            response = REQUESTS_MAPPING[node.url](url=''.join(['http://', node.url, node.endpoint]), data=input, headers=headers)
+            # print(input)
+            text, res = REQUESTS_MAPPING[node.url](node, input, headers)
         else:
             return "Not supported"
         
-        res = response.json()
-        print(res)
-        text = []
-        if node.outputSelection == 'concat':
-            text = res
-        elif node.outputSelection.startswith('top'): # top k, where k is < 10
-            text.extend(res[:int(node.outputSelection[-1])])
-        elif node.outputSelection == 'random': # random k, where k is < 10
-            text.append(random.sample(res, k=int(node.outputSelection[-1])))
 
         out = OUTPUT_FORMAT_MAPPING[node.url](text)
         
-        return FlowchartTaskResult(value={'answer': '\n**********\n'.join(out)}, executionDetails={'full_response': res, 'input': input})
+        return FlowchartTaskResult(value='\n**********\n'.join(out), executionDetails={'full_response': res, 'input': input})
 
 
     def execute(self, input: Any) -> List[FlowchartTaskResult]:

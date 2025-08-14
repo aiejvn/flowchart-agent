@@ -1,6 +1,7 @@
 [
 
     {
+        "name": "main_query",
         "type": "llm",
         "instructions": "Here are some documents accumulated by the client:\n[docs]\n\n[input]"
     }

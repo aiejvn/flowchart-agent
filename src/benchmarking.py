@@ -1,7 +1,7 @@
 from flowchart import load_flowchart, init
-import json
+import json, os
 import dotenv
-
+import time
 import argparse
 
 from tqdm import *
@@ -33,17 +33,20 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-m", "--model", help = "model name", default='gpt-4o-mini')
-    parser.add_argument("-i", "--input", help = "input file name")
-    parser.add_argument("-f", "--flow", help = "flowchart")
-    parser.add_argument("-k", "--topk", help = "top k", type=int)
-    parser.add_argument("-o", "--out", help = "output folder")
+    parser.add_argument("-i", "--input", help = "input file name", default='src/data/cd.jsonl')
+    parser.add_argument("-f", "--flow", help = "flowchart", default='src/flowcharts/rag.json')
+    parser.add_argument("-k", "--topk", help = "top k", type=int, default=10)
+    parser.add_argument("-o", "--out", help = "output folder", default='src/data/results')
 
     args = parser.parse_args()
 
-    models = ['gpt-4o', 'o3', 'o3-deep-research']
+    models = ['gpt-4o', 'o3', 'gpt-4o-mini']
     for m in models:
-        
-        res = example_test(args.input, args.flow, m, args.topk)
+        out_file = f"{args.out}/{args.input.split('/')[-1].split('.')[0]}_{m}_{args.flow.split('/')[-1].split('.')[0]}.json"
+        if not os.path.exists(out_file):
+            res = example_test(args.input, args.flow, m, args.topk)
 
-        with open(f"{args.out}/{args.input.split('/')[-1].split('.')[0]}_{m}_{args.flow.split('/')[-1].split('.')[0]}.json", 'w') as f:
-            f.write(json.dumps(res, indent=4))
+            with open(out_file, 'w') as f:
+                f.write(json.dumps(res, indent=4))
+
+            time.sleep(600)
