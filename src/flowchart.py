@@ -109,7 +109,7 @@ class Flowchart:
                 # print(response.content, re.sub(r'\`\`\`.*', '', response.content))
                 temp = json.loads(re.sub(r',(?=\n})', '', re.sub(r'\`\`\`.*', '', response.content)).strip().replace('\n', ''))
 
-                break
+                count = 3
             except json.decoder.JSONDecodeError as e:
                 print('retrying')
                 count += 1
