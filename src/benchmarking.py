@@ -4,6 +4,8 @@ import dotenv
 import time
 import argparse
 
+import pickle as pkl
+
 from tqdm import *
 
 
@@ -24,7 +26,7 @@ def example_test(input_file, flowchart_file, model, n=-1):
         result = fc.execute(d)
         # print(result[-1])
         # result[0]['gold_label'] = d['gold_label'][0]
-        res.append({'result': result[0].__dict__(), 'gold_label': d['gold_label'][0]})
+        res.append({'result': [x.__dict__() for x in result], 'gold_label': d['gold_label'][0]})
 
     return res
 
@@ -45,8 +47,14 @@ if __name__ == "__main__":
         out_file = f"{args.out}/{args.input.split('/')[-1].split('.')[0]}_{m}_{args.flow.split('/')[-1].split('.')[0]}.json"
         if not os.path.exists(out_file):
             res = example_test(args.input, args.flow, m, args.topk)
+            # print(res)
 
-            with open(out_file, 'w') as f:
-                f.write(json.dumps(res, indent=4))
+            try:
+                with open(out_file, 'w') as f:
+                    f.write(json.dumps(res, indent=4))
+            except Exception as e:
+                print(e)
+                with open(out_file.split('.')[0] + '.pkl', 'wb') as f:
+                    pkl.dump(res, f)
 
-            time.sleep(600)
+            # time.sleep(600)
