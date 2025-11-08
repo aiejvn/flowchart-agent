@@ -12,11 +12,11 @@ idna==3.10
 jiter==0.10.0
 jsonpatch==1.33
 jsonpointer==3.0.0
-langchain==0.3.25
-langchain-core==0.3.65
-langchain-openai==0.3.22
-langchain-text-splitters==0.3.8
-langchain_community==0.3.27
+# langchain==0.3.25
+# langchain-core==0.3.65
+# langchain-openai==0.3.22
+# langchain-text-splitters==0.3.8
+# langchain_community==0.3.27
 langsmith==0.3.45
 openai==1.86.0
 orjson==3.10.18
